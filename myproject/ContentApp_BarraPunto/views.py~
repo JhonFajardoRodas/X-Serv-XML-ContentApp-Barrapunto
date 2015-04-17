@@ -1,0 +1,27 @@
+from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseNotFound
+from models import ListaDB
+from django.views.decorators.csrf import csrf_exempt
+ 
+ 
+# Create your views here.
+
+
+@csrf_exempt
+
+
+def buscarPersona(request, recurso):
+
+    if request.method == 'GET':
+        try:
+            valor = ListaDB.objects.get(name=recurso)
+            salida = valor.age
+            return HttpResponse(salida)
+        except ListaDB.DoesNotExist:
+            return HttpResponseNotFound("No existe el elmento!")
+    elif request.method == 'PUT':
+        entryNew = ListaDB(name=recurso, age=request.body)
+        entryNew.save()
+        salida =  "Almacenado: " + entryNew.name
+        return HttpResponse(salida)
+
